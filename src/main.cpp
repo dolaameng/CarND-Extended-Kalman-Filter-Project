@@ -48,11 +48,11 @@ parse_input(ifstream & in_stream) {
     std::stringstream ss{line};
     string sensor; ss >> sensor;
     if (sensor == "L") {
-      // continue;
+      // continue; // turn-on to use only Radar data - less accurate position but more accurate velocity?
       ss >> x >> y >> ts;
       measurements.push_back(Measurement{ts, x, y});
     } else if(sensor == "R") {
-      // continue;
+      // continue; // turn-on to use only Laser data - less accurate velocity but more accurate position?
       ss >> rho >> phi >> rho_dot >> ts;
       measurements.push_back(Measurement{ts, rho, phi, rho_dot});
     } else {
@@ -99,7 +99,7 @@ int main(int argc, char* argv[]) {
   // analyze the result
   // When used as a metric rather than an objective for optimization,
   // the ratio of RMSE might be more inituitive than RMSE though.
-  // BUT WHY DOES vx and vy may have different RMSE?
+  // BUT WHY COULD vx and vy have different RMSE?
   auto rmse = root_mean_squared_error(estimates, groud_truth);
   cout << "RMSE: " << rmse << endl;
   

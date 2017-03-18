@@ -31,6 +31,7 @@ namespace kalman {
                  1, 1, 0, 0,
                  1, 1, 1, 1;
       // given in the code template
+      // might be parameterized from data in future
       R_laser << 0.0225, 0     ,
                  0     , 0.0225;
       R_radar << 0.09  , 0     , 0     ,
@@ -38,7 +39,7 @@ namespace kalman {
                  0     , 0     , 0.09  ;      
 
     }
-    ~Filter() = default;
+    ~Filter() = default; // no need to take care of rule-of-six
 
     // state initialization
     void init(const Measurement & measurement) {
@@ -152,6 +153,7 @@ namespace kalman {
       }
     }
 
+    // general recipe to update when residual is given
     template<
       typename Residual,
       typename ObservationTransform,
