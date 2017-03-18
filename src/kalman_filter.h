@@ -52,6 +52,7 @@ namespace kalman {
            0, 0, 1, 0,
            0, 0, 0, 1;
     }
+
     // functor interface
     PositionVelocity operator() (const Measurement & measurement) {
       if (!is_ready) { 
@@ -96,9 +97,10 @@ namespace kalman {
       Q(3, 3) = ay_dt2;
 
       // update state with predicted value
-      estimate = F * estimate;
-      P = F * P * F.transpose() + Q;   
+      estimate = std::move(F * estimate);
+      P = std::move(F * P * F.transpose() + Q);   
     }
+
     void update(const Measurement & m) {
       if (m.sensor == Sensor::LASER) {
         auto residual = m.observation - H_laser * estimate; 
@@ -149,6 +151,7 @@ namespace kalman {
         update_state(residual, H_radar, R_radar);
       }
     }
+
     template<
       typename Residual,
       typename ObservationTransform,
@@ -170,7 +173,8 @@ namespace kalman {
       //   assert(P(i, i) >= 0);
       // }
     }
-  public:
+
+  private:
     // internal states
     bool is_ready;
     PositionVelocity estimate;
